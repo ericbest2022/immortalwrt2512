@@ -190,14 +190,22 @@ jobs:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: 生成发布标签
+    - name: Generate release tag  # 生成发布标签
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         VERSION1="${REPO_BRANCH#*-}"
-        echo -e "🎉 Cudy TR3000\n✅ ${VERSION1} 源码\n❗️ ip地址 : 192.168.66.1" >> release.txt
         echo "release_tag=$(date +"%Y.%m.%d-%H%M-${VERSION1}_TR3000_padavanonly")" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
+
+        cat > release.txt << EOF
+        ### 🐬 固件信息
+        - ✳️ 平台型号: TR3000
+        - 🪐 固件源码: ${{ env.REPO_URL }}
+        - ✅ 源码分支: ${{ env.REPO_BRANCH }}
+        - 📅 创建时间: $(date +"%Y-%m-%d %H:%M:%S")
+        - 🌐 默认地址: 192.168.66.1
+        - 🔑 默认密码: password
 
     - name: 上传固件到发布
       uses: softprops/action-gh-release@master
