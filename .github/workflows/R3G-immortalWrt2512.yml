@@ -190,14 +190,22 @@ jobs:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: 生成发布标签
+    - name: Generate release tag  # 生成发布标签
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         VERSION1="${REPO_BRANCH#*-}"
-        echo -e "🎉 MT7621平台\n✅ ${VERSION1} 源码\n❗️ ip地址 : 192.168.66.1" >> release.txt
-        echo "release_tag=$(date +"%Y.%m.%d-%H%M-${VERSION1}_immortalWrt-R3G")" >> $GITHUB_OUTPUT
+        echo "release_tag=$(date +"%Y.%m.%d-%H%M-${VERSION1}_R3G_immortalWrt")" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
+
+        cat > release.txt << EOF
+        ### 🐬 固件信息
+        - ✳️ 平台型号: R3G
+        - 🪐 固件源码: ${{ env.REPO_URL }}
+        - ✅ 源码分支: ${{ env.REPO_BRANCH }}
+        - 📅 创建时间: $(date +"%Y-%m-%d %H:%M:%S")
+        - 🌐 默认地址: 192.168.66.1
+        - 🔑 默认密码: password
 
     - name: 上传固件到发布
       uses: softprops/action-gh-release@master
