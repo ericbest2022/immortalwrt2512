@@ -17,8 +17,8 @@ on:
   repository_dispatch:
   workflow_dispatch:
     #自动编译：UTC 00:00 = 中国 08:00，分,时,日,月,周
-  schedule:
-    - cron: 8 0 8,18,28 * *
+#  schedule:
+#    - cron: 8 0 8,18,28 * *
         # 分,时,日,月,周。每周 四 20时执行一次 (UTC时间)
   
 env:
@@ -214,3 +214,18 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
+
+    - name: Delete workflow runs  # 删除工作流运行
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 1
+        keep_minimum_runs: 10
+
+#    - name: Remove old Releases  # 删除旧的发布版本
+#      uses: dev-drprasad/delete-older-releases@v0.2.1
+#      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+#      with:
+#        keep_latest: 10
+#        delete_tags: true
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
