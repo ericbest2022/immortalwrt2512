@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     #自动编译：UTC 00:00 = 中国 08:00，分,时,日,月,周
   schedule:
-    - cron: 8 0 2,12,22 * *
+    - cron: 8 0 8 * *
         # 分,时,日,月,周。每周 四 20时执行一次 (UTC时间)
   
 env:
